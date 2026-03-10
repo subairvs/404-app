@@ -93,8 +93,7 @@ db_from_env = dj_database_url.config(conn_max_age=600)
 
 if db_from_env:
     DATABASES = {'default': db_from_env}
-    # PyMySQL specific options for Django
-    DATABASES['default']['OPTIONS'] = {'charset': 'utf8mb4'}
+    
 else:
     # Keep the default SQLite block for local development fallback
     DATABASES = {
