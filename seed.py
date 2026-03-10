@@ -1,19 +1,25 @@
-from django.contrib.auth.models import User
-from booking.models import ParkingZone
+import os
+import django
 
-# Create superuser
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings")
+django.setup()
+
+from django.contrib.auth.models import User
+from booking.models import Airport
+
+# Create admin user
 if not User.objects.filter(username='admin').exists():
     User.objects.create_superuser('admin', 'admin@example.com', 'admin')
 
-# Create parking zones
-zones = [
-    {'name': 'Terminal A - Deck 1', 'deck': 'A1'},
-    {'name': 'Terminal A - Deck 2', 'deck': 'A2'},
-    {'name': 'Terminal B - Premium', 'deck': 'B1'},
-    {'name': 'Valet Zone', 'deck': 'V1'}
+# Create airports
+airports = [
+    {"name": "Indira Gandhi International Airport", "location_code": "DEL"},
+    {"name": "Chhatrapati Shivaji Maharaj International Airport", "location_code": "BOM"},
+    {"name": "Kempegowda International Airport", "location_code": "BLR"},
+    {"name": "Cochin International Airport", "location_code": "COK"},
 ]
 
-for zone in zones:
-    ParkingZone.objects.get_or_create(name=zone['name'], deck=zone['deck'])
-    
-print("Successfully seeded database with admin user and parking zones.")
+for airport in airports:
+    Airport.objects.get_or_create(**airport)
+
+print("Database seeded successfully.")
