@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container flex flex-col items-center animate-fade-in" style="padding-bottom: 5rem; min-height: 80vh;">
+  
+  <div class="booking-header text-center m-b-2">
+    <h2 class="gradient-text" style="font-size: 3rem;">Book Your Service</h2>
+    <div class="progress-bar flex justify-center gap-1 m-t-1">
+      <div id="pb-1" class="progress-step" style="width: 50px; height: 5px; border-radius: 10px; transition: 0.3s; background: var(--color-primary);"></div>
+      <div id="pb-2" class="progress-step" style="width: 50px; height: 5px; border-radius: 10px; transition: 0.3s; background: var(--color-border);"></div>
+      <div id="pb-3" class="progress-step" style="width: 50px; height: 5px; border-radius: 10px; transition: 0.3s; background: var(--color-border);"></div>
+      <div id="pb-4" class="progress-step" style="width: 50px; height: 5px; border-radius: 10px; transition: 0.3s; background: var(--color-border);"></div>
+    </div>
+  </div>
+
+  <div class="booking-card card glass w-full" style="max-width: 650px; padding: 3rem; margin: 0 auto;">
+    <form id="booking-form" method="POST" action="{% url 'book' %}">
+      {% csrf_token %}
+      
+      <input type="hidden" name="service" id="field-service" value="wash">
+      <input type="hidden" name="airport" id="field-airport" value="">
+      
+      <div id="step-1" class="step animate-fade-in">
+        <h3 class="m-b-2"><i data-lucide="calendar" class="inline-icon"></i> Schedule Your Visit</h3>
+        
+        <div class="form-group m-b-2">
+          <label class="text-muted block m-b-1 text-sm">Customer Name</label>
+          <input type="text" name="customer_name" id="input-name" class="input" style="height: 50px; padding: 0 1.25rem;" placeholder="Your Full Name" 
+                 value="{% if user.is_authenticated %}{{ user.get_full_name }}{% endif %}" required>
+        </div>
+        
+        <div class="grid gap-2 m-b-2" style="grid-template-columns: 1fr 1fr;">
+            <div class="form-group">
+                <label class="text-muted block m-b-1 text-sm">Vehicle Model</label>
+                <input type="text" name="vehicle_name" id="input-vehicle" class="input" style="height: 50px; padding: 0 1.25rem;" placeholder="e.g. Hyundai Creta" required>
+            </div>
+            <div class="form-group">
+                <label class="text-muted block m-b-1 text-sm">License Plate</label>
+                <input type="text" name="license_plate" id="input-plate" class="input" style="height: 50px; padding: 0 1.25rem;" placeholder="KL 41 AB 1234" required>
+            </div>
+        </div>
+
+        <div class="grid gap-2 m-b-2" style="grid-template-columns: 1fr 1fr;">
+            <div class="form-group">
+              <label class="text-muted block m-b-1 text-sm">Date Giving Vehicle (Drop-off)</label>
+              <input type="date" name="arrival_date" id="input-arrival-date" class="input" style="height: 50px; padding: 0 1.25rem; font-family: inherit; color-scheme: dark;" required>
+            </div>
+            <div class="form-group">
+              <label class="text-muted block m-b-1 text-sm">Time Giving Vehicle</label>
+              <input type="time" name="time" id="input-time" class="input" style="height: 50px; padding: 0 1.25rem; font-family: inherit; color-scheme: dark;" required>
+            </div>
+        </div>
+
+        <div class="form-group m-b-2">
+            <label class="text-muted block m-b-1 text-sm">Date Taking Vehicle (Return/Pickup)</label>
+            <input type="date" name="pickup_date" id="input-pickup-date" class="input" style="height: 50px; padding: 0 1.25rem; font-family: inherit; color-scheme: dark;" required>
+            <small class="text-muted text-sm m-t-1 block" style="margin-top: 0.5rem; display: block;">When will you return from your trip to collect your vehicle?</small>
+        </div>
+
+        <button type="button" class="btn btn-primary w-full m-t-1" style="height: 55px; font-weight: 600; font-size: 1.1rem;" onclick="nextStep(2)">Continue to Services</button>
+      </div>
+
+      <div id="step-2" class="step animate-fade-in" style="display: none;">
+        <h3 class="m-b-2"><i data-lucide="droplets" class="inline-icon"></i> Choose Your Service</h3>
+        <div class="service-options grid gap-1 m-y-2">
+          <div id="opt-parking" class="service-card p-2 glass border rounded cursor-pointer transition card" onclick="selectService('parking')">
+            <h4 class="m-b-1">🅿️ Secure Parking</h4>
+            <p class="text-muted text-sm">₹899/starting. Safe and monitored.</p>
+          </div>
+          <div id="opt-wash" class="service-card p-2 glass border rounded cursor-pointer transition card" style="border-color: var(--color-primary); background: rgba(0, 229, 255, 0.05);" onclick="selectService('wash')">
+            <h4 class="m-b-1">🚿 Premium Wash</h4>
+            <p class="text-muted text-sm">₹1899/starting. Exterior foam and interior detailing.</p>
+          </div>
+          <div id="opt-coating" class="service-card p-2 glass border rounded cursor-pointer transition card" onclick="selectService('coating')">
+             <h4 class="m-b-1">🛡️ Ceramic Coating</h4>
+             <p class="text-muted text-sm">₹17999/starting. 3-year paint protection.</p>
+          </div>
+        </div>
+        <div class="flex gap-1 m-t-2">
+          <button type="button" class="btn btn-outline flex-1" onclick="prevStep(1)">Back</button>
+          <button type="button" class="btn btn-primary flex-1" onclick="nextStep(3)">Next Step</button>
+        </div>
+      </div>
+
+      <div id="step-3" class="step animate-fade-in" style="display: none;">
+         <h3 class="m-b-2"><i data-lucide="map-pin" class="inline-icon"></i> Select Location</h3>
+         <div class="grid gap-1 m-b-2" style="grid-template-columns: 1fr 1fr;">
+           {% for airport in airports %}
+             <button type="button" id="airport-{{ airport.id }}" class="btn btn-outline airport-btn"
+                     style="padding: 1.5rem;"
+                     onclick="selectAirport('{{ airport.id }}', '{{ airport.name }}')">
+               {{ airport.name }} ({{ airport.location_code }})
+             </button>
+           {% empty %}
+             <p class="text-muted text-center grid-span-2">No airports configured in Admin.</p>
+           {% endfor %}
+         </div>
+         <div class="flex gap-1">
+          <button type="button" class="btn btn-outline flex-1" onclick="prevStep(2)">Back</button>
+          <button type="button" id="btn-review" class="btn btn-primary flex-1" onclick="generateReview(); nextStep(4)" disabled>Review</button>
+        </div>
+      </div>
+
+      <div id="step-4" class="step animate-fade-in" style="display: none;">
+         <div class="text-center m-b-2">
+           <i data-lucide="check-circle" style="width:50px;height:50px;color:var(--color-primary);margin-bottom:1rem;"></i>
+           <h3>Review Details</h3>
+         </div>
+         <div class="summary-card p-2 glass m-b-2" style="border-radius: 12px;">
+           <div class="flex justify-between py-1 border-b" style="padding: 1rem 0; border-color: var(--color-border);">
+             <span class="text-muted">Vehicle</span>
+             <strong id="rev-vehicle"></strong>
+           </div>
+           <div class="flex justify-between py-1 border-b" style="padding: 1rem 0; border-color: var(--color-border);">
+             <span class="text-muted">Date Given</span>
+             <strong id="rev-arrival"></strong>
+           </div>
+           <div class="flex justify-between py-1 border-b" style="padding: 1rem 0; border-color: var(--color-border);">
+             <span class="text-muted">Date Taken</span>
+             <strong id="rev-pickup"></strong>
+           </div>
+           <div class="flex justify-between py-1 border-b" style="padding: 1rem 0; border-color: var(--color-border);">
+             <span class="text-muted">Location</span>
+             <strong id="rev-airport"></strong>
+           </div>
+           <div class="flex justify-between py-1" style="padding: 1rem 0;">
+             <span class="text-muted">Service</span>
+             <strong id="rev-service" class="text-primary"></strong>
+           </div>
+         </div>
+         <div class="flex gap-1">
+          <button type="button" class="btn btn-outline flex-1" onclick="prevStep(3)">Edit</button>
+          <button type="submit" class="btn btn-primary flex-1">Confirm Booking</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  let currentStep = 1;
+  let selectedAirportName = '';
+
+  document.addEventListener('DOMContentLoaded', function() {
+      const arrivalDateInput = document.getElementById('input-arrival-date');
+      const pickupDateInput = document.getElementById('input-pickup-date');
+
+      // Set today's date as min for arrival
+      const today = new Date().toISOString().split('T')[0];
+      arrivalDateInput.setAttribute('min', today);
+
+      arrivalDateInput.addEventListener('change', function() {
+          const selectedDate = this.value;
+          // Set the minimum selectable date for pickup to be the arrival date
+          pickupDateInput.setAttribute('min', selectedDate);
+          
+          // If pickup date is already chosen and is earlier than new arrival date, clear it
+          if (pickupDateInput.value && pickupDateInput.value < selectedDate) {
+              pickupDateInput.value = '';
+          }
+      });
+  });
+
+  function updateProgressBar(step) {
+    for (let i = 1; i <= 4; i++) {
+        const pb = document.getElementById(`pb-${i}`);
+        pb.style.background = i <= step ? 'var(--color-primary)' : 'var(--color-border)';
+    }
+  }
+
+  function nextStep(step) {
+      if(currentStep === 1) {
+          const required = ['input-name', 'input-vehicle', 'input-arrival-date', 'input-pickup-date', 'input-time'];
+          for(let id of required) {
+              if(!document.getElementById(id).value) {
+                  alert("Please fill in all schedule details.");
+                  return;
+              }
+          }
+      }
+      document.getElementById(`step-${currentStep}`).style.display = 'none';
+      document.getElementById(`step-${step}`).style.display = 'block';
+      currentStep = step;
+      updateProgressBar(step);
+      lucide.createIcons();
+  }
+
+  function prevStep(step) {
+      document.getElementById(`step-${currentStep}`).style.display = 'none';
+      document.getElementById(`step-${step}`).style.display = 'block';
+      currentStep = step;
+      updateProgressBar(step);
+  }
+
+  function selectService(type) {
+      document.getElementById('field-service').value = type;
+      ['parking','wash','coating'].forEach(t => {
+        const card = document.getElementById(`opt-${t}`);
+        card.style.borderColor = 'var(--color-border)';
+        card.style.background = 'transparent';
+      });
+      const selected = document.getElementById(`opt-${type}`);
+      selected.style.borderColor = 'var(--color-primary)';
+      selected.style.background = 'rgba(0, 229, 255, 0.05)';
+  }
+
+  function selectAirport(id, name) {
+      document.getElementById('field-airport').value = id;
+      selectedAirportName = name;
+      document.querySelectorAll('.airport-btn').forEach(btn => {
+          btn.classList.replace('btn-primary', 'btn-outline');
+      });
+      const selBtn = document.getElementById(`airport-${id}`);
+      selBtn.classList.replace('btn-outline', 'btn-primary');
+      document.getElementById('btn-review').disabled = false;
+  }
+
+  function generateReview() {
+      document.getElementById('rev-vehicle').innerText = document.getElementById('input-vehicle').value + ' (' + document.getElementById('input-plate').value + ')';
+      document.getElementById('rev-arrival').innerText = document.getElementById('input-arrival-date').value + ' at ' + document.getElementById('input-time').value;
+      document.getElementById('rev-pickup').innerText = document.getElementById('input-pickup-date').value;
+      document.getElementById('rev-airport').innerText = selectedAirportName;
+      
+      const srv = document.getElementById('field-service').value;
+      const srvLabels = { parking: 'Secure Parking', wash: 'Signature Wash', coating: 'Ceramic Coating' };
+      document.getElementById('rev-service').innerText = srvLabels[srv] || srv;
+  }
+</script>
+{% endblock %}

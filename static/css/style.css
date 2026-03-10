@@ -1,0 +1,301 @@
+:root {
+  /* Core brand colors */
+  --color-bg: #0a0a0a;
+  --color-surface: rgba(255, 255, 255, 0.03);
+  --color-surface-hover: rgba(255, 255, 255, 0.08);
+  --color-border: rgba(255, 255, 255, 0.1);
+  --color-primary: #00e5ff; /* Cyan accent for water/shine vibe */
+  --color-primary-glow: rgba(0, 229, 255, 0.2);
+  --color-text-main: #ffffff;
+  --color-text-muted: #a0a0a0;
+
+  /* Status Colors */
+  --color-status-pending: #f59e0b;
+  --color-status-progress: #3b82f6;
+  --color-status-done: #10b981;
+
+  font-family: 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: dark;
+  color: var(--color-text-main);
+  background-color: var(--color-bg);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+  background-image: 
+    radial-gradient(circle at 50% 0%, var(--color-primary-glow) 0%, transparent 50%),
+    radial-gradient(circle at 0% 100%, rgba(255,255,255,0.02) 0%, transparent 40%);
+  background-attachment: fixed;
+  /* Centering Fix: Ensure body doesn't force everything to a single center point */
+  display: block; 
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  margin-bottom: 1rem;
+}
+
+a {
+  font-weight: 500;
+  color: var(--color-primary);
+  text-decoration: inherit;
+  transition: opacity 0.2s ease;
+}
+a:hover {
+  opacity: 0.8;
+}
+
+/* Utilities */
+.text-center { text-align: center; }
+.text-muted { color: var(--color-text-muted); }
+.text-primary { color: var(--color-primary); }
+.text-sm { font-size: 0.875rem; }
+.m-b-1 { margin-bottom: 1rem; }
+.m-b-2 { margin-bottom: 2rem; }
+.m-t-1 { margin-top: 1rem; }
+.m-t-2 { margin-top: 2rem; }
+.m-y-2 { margin-top: 2rem; margin-bottom: 2rem; }
+.m-x-auto { margin-left: auto; margin-right: auto; }
+.p-1 { padding: 1rem; }
+.p-2 { padding: 2rem; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.items-center { align-items: center; }
+.gap-1 { gap: 1rem; }
+.gap-2 { gap: 2rem; }
+.grid { display: grid; }
+.w-full { width: 100%; }
+.inline-icon { vertical-align: middle; margin-right: 0.5rem; }
+
+/* Glassmorphism & UI Utilities */
+.glass {
+  background: var(--color-surface);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+}
+
+.card {
+  padding: 1.5rem;
+  transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  background: var(--color-surface-hover);
+  border-color: rgba(255,255,255,0.2);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-size: 1rem;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #000;
+  box-shadow: 0 0 20px var(--color-primary-glow);
+}
+
+.btn-primary:hover {
+  transform: scale(1.02);
+  box-shadow: 0 0 30px rgba(0, 229, 255, 0.4);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border);
+}
+
+/* Forms & Inputs */
+.input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  color: var(--color-text-main);
+  font-family: inherit;
+  font-size: 1rem;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  outline: none;
+}
+
+.input:focus {
+  border-color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 2px var(--color-primary-glow);
+}
+
+.auth-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 160px); /* Fill available space minus nav/footer */
+  width: 100%;
+  padding-bottom: 2rem;
+}
+
+/* Layout */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+  width: 100%;
+}
+
+.app-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  /* space for fixed navbar plus a little gap */
+  padding-top: calc(80px + 1rem); /* ~96px */
+  min-height: calc(100vh - 80px);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centering fix for dashboard and home content */
+  width: 100%;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  border-radius: 0;
+  border: none;
+  border-bottom: 1px solid var(--color-border);
+
+  /* custom background to mimic glass without heavy blur */
+  background: rgba(10, 10, 10, 0.65);
+  backdrop-filter: blur(6px);
+}
+
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 80px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.logo-404 { color: var(--color-primary); }
+.nav-links { display: flex; gap: 2rem; align-items: center; }
+
+/* Hero Section Centering */
+.hero { 
+  text-align: center; 
+  padding: 6rem 0; 
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative; /* Fixes clickability issue */
+  z-index: 10;        /* Ensures it sits above any errant background layers */
+}
+
+.gradient-text {
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  background: linear-gradient(to right, #fff, var(--color-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 1.5rem;
+  line-height: 1.1;
+}
+
+.hero-subtitle { 
+  font-size: 1.25rem; 
+  color: var(--color-text-muted); 
+  max-width: 650px; 
+  margin: 0 auto 2.5rem; 
+}
+
+.hero-actions { 
+  display: flex; 
+  justify-content: center; 
+  gap: 1.5rem; 
+  width: 100%;
+}
+
+/* Services Grid */
+.services {
+  width: 100%;
+  padding-bottom: 4rem;
+}
+
+.services h2 {
+  text-align: center;
+  margin-bottom: 3rem;
+  font-size: 2rem;
+}
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  width: 100%;
+}
+
+.icon-wrapper { margin-bottom: 1.5rem; text-align: center;}
+.price { display: block; margin-top: 1rem; font-size: 1.5rem; font-weight: 700; color: var(--color-primary); }
+
+.footer {
+  padding: 3rem 0;
+  margin-top: auto;
+  border-radius: 0;
+  border: none;
+  border-top: 1px solid var(--color-border);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.8s ease-out forwards;
+}
+

@@ -1,0 +1,176 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Care - Premium Car Wash & Ceramic Coating</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <style>
+        /* Essential CSS to fix the "floating" and "overlap" look immediately */
+        :root {
+            --nav-height: 80px;
+            --color-primary: #ff0055; /* Adjust to match your Register button pink */
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--nav-height);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            /* The "Glassmorphism" fix: prevents the solid black 'wall' effect */
+            background: rgba(10, 10, 10, 0.8); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .logo-404 { color: #fff; }
+        .logo-desc { color: var(--color-primary); }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: #e0e0e0;
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--color-primary);
+        }
+
+        /* Crucial: This pushes the "Fly High" text down so it's not hidden behind the nav */
+        .main-content {
+            padding-top: var(--nav-height);
+            min-height: calc(100vh - 160px); /* Adjust based on footer height */
+        }
+
+        .btn-sm {
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+        <nav class="navbar">
+          <div class="nav-container">
+            <a href="{% url 'home' %}" class="logo">
+              <span class="logo-404">404</span>
+              <span class="logo-desc">Care</span>
+            </a>
+            
+            <div class="nav-links">
+              {% if not user.is_staff %}
+                <a href="{% url 'home' %}#services" class="nav-link">
+                  <i data-lucide="car" style="width:18px;height:18px;"></i> Services
+                </a>
+              {% endif %}
+
+              {% if user.is_authenticated %}
+                {% if user.is_staff %}
+                  <a href="{% url 'staff_dashboard' %}" class="nav-link" style="color:var(--color-primary);">
+                    <i data-lucide="shield" style="width:18px;height:18px;"></i> Staff Panel
+                  </a>
+                  <form action="{% url 'logout' %}" method="post" style="display:inline; margin-left: 10px;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-outline btn-sm">Logout</button>
+                  </form>
+                {% else %}
+                  <a href="{% url 'book' %}" class="nav-link">
+                    <i data-lucide="calendar-check" style="width:18px;height:18px;"></i> Book Now
+                  </a>
+                  <a href="{% url 'dashboard_latest' %}" class="nav-link">
+                    <i data-lucide="user" style="width:18px;height:18px;"></i> My Bookings
+                  </a>
+                  <form action="{% url 'logout' %}" method="post" style="display:inline; margin-left: 10px;">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-outline btn-sm">Logout</button>
+                  </form>
+                {% endif %}
+              {% else %}
+                <a href="{% url 'login' %}" class="nav-link">
+                  <i data-lucide="log-in" style="width:18px;height:18px;"></i> Log In
+                </a>
+                <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Register</a>
+              {% endif %}
+            </div>
+          </div>
+        </nav>
+        
+        <main class="main-content">
+            {% block content %}
+            {% endblock %}
+        </main>
+        
+        <footer class="footer glass">
+          <div class="container text-center text-muted" style="padding: 2rem 0; border-top: 1px solid rgba(255,255,255,0.05);">
+            <p>© 2026 404 Care Ltd. Ceramic Coating & Premium Wash.</p>
+          </div>
+        </footer>
+    </div>
+    
+    <script>
+      // Initialize Lucide icons
+      lucide.createIcons();
+      
+      // Optional: Add scroll effect to navbar
+      window.addEventListener('scroll', () => {
+          const nav = document.querySelector('.navbar');
+          if (window.scrollY > 50) {
+              nav.style.background = 'rgba(10, 10, 10, 0.95)';
+              nav.style.padding = '0.5rem 0';
+          } else {
+              nav.style.background = 'rgba(10, 10, 10, 0.8)';
+              nav.style.padding = '1rem 0';
+          }
+      });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

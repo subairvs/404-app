@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="hero container animate-fade-in">
+  <div class="hero-content">
+    {% if user.is_staff %}
+      <h1 class="gradient-text">Welcome, Staff.<br/>Ready to Update?</h1>
+      <p class="hero-subtitle">
+        Access the management dashboard to track vehicle progress and manage premium coatings.
+      </p>
+      <div class="hero-actions">
+        <a href="{% url 'staff_dashboard' %}" class="btn btn-primary">Open Staff Panel</a>
+      </div>
+    {% else %}
+      <h1 class="gradient-text">Fly High.<br/>Return to Perfection.</h1>
+      <p class="hero-subtitle">
+        Premium airport parking seamlessly integrated with world-class car wash.
+      </p>
+      <div class="hero-actions">
+        {% if user.is_authenticated %}
+          <a href="{% url 'book' %}" class="btn btn-primary">Start Booking</a>
+          <a href="{% url 'dashboard_latest' %}" class="btn btn-outline">Check Status</a>
+        {% else %}
+          <a href="{% url 'login' %}?next={% url 'book' %}" class="btn btn-primary">Start Booking</a>
+          <a href="{% url 'login' %}?next={% url 'dashboard_latest' %}" class="btn btn-outline">Check Status</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</section>
+
+{% if not user.is_staff %}
+<section id="services" class="services container animate-fade-in" style="animation-delay: 0.2s;">
+  <h2 class="text-center">Our Premium Services</h2>
+  <div class="services-grid">
+     <div class="card glass text-center">
+      <div class="icon-wrapper"><i data-lucide="parking-circle" style="width:48px;height:48px;color:var(--color-primary)"></i></div>
+      <h3>Secure Parking</h3>
+      <p class="text-muted">Premium covered slots adjacent to the terminal.</p>
+      <span class="price">From ₹20/day</span>
+    </div>
+    <div class="card glass text-center">
+       <div class="icon-wrapper"><i data-lucide="droplets" style="width:48px;height:48px;color:var(--color-primary)"></i></div>
+      <h3>Signature Wash</h3>
+      <p class="text-muted">Extensive exterior snow-foam wash.</p>
+      <span class="price">₹89</span>
+    </div>
+    <div class="card glass text-center">
+      <div class="icon-wrapper"><i data-lucide="shield-check" style="width:48px;height:48px;color:var(--color-primary)"></i></div>
+      <h3>Ceramic Coating</h3>
+      <p class="text-muted">Multi-year protection finish.</p>
+      <span class="price">From ₹499</span>
+    </div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

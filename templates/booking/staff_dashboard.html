@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container animate-fade-in" style="padding-top: 2rem;">
+  
+  <div class="dashboard-header m-b-2 flex justify-between align-center" style="align-items: center;">
+    <div>
+      <h2>Staff Dashboard</h2>
+      <p class="text-muted">Manage active service orders</p>
+    </div>
+    <div class="stats flex gap-1">
+      <div class="text-sm bg-glass" style="padding: 0.5rem 1rem; border-radius: 8px;">Total Active: <span class="text-primary">{{ bookings|length }}</span></div>
+    </div>
+  </div>
+
+  <div class="grid gap-2" style="grid-template-columns: 1fr;">
+    
+    {% for booking in bookings %}
+    <div class="card glass flex justify-between" style="align-items: center; padding: 1.5rem;">
+      
+      <!-- Details -->
+      <div class="booking-info flex gap-2" style="flex: 1;">
+        <div style="min-width: 150px;">
+          <p class="text-xs text-muted">Order #404-{{ booking.id }}</p>
+          <h3 style="margin: 0.25rem 0;">{{ booking.customer_name }}</h3>
+          <p class="text-sm"><strong>{{ booking.vehicle_name }}</strong> ({{ booking.license_plate }})</p>
+        </div>
+        <div style="min-width: 150px;">
+          <p class="text-xs text-muted">Service</p>
+          <p class="text-sm" style="margin: 0.25rem 0; text-transform: capitalize;"><strong>{{ booking.get_service_type_display }}</strong></p>
+          <p class="text-xs text-muted"><i data-lucide="map-pin" style="width: 12px; height: 12px; display: inline-block;"></i> {{ booking.airport.name }}</p>
+        </div>
+             <div style="min-width: 150px;">
+          <p class="text-xs text-muted">Time</p>
+          <p class="text-sm" style="margin: 0.25rem 0;">{{ booking.arrival_date|date:"N j, Y" }} at {{ booking.time|time:"g:i A" }}</p>
+        </div>
+      </div>
+
+      <!-- Action -->
+      <div class="booking-action" style="min-width: 260px; text-align: right;">
+        <form action="{% url 'update_booking_status' booking.id %}" method="post" class="flex gap-1" style="align-items: center; justify-content: flex-end;">
+          {% csrf_token %}
+          <div style="flex: 1;">
+            <select name="status" class="input w-full text-sm" style="padding: 0.5rem;">
+
+              {% if booking.service_type == 'parking' %}
+                <option value="pending"             {% if booking.status == 'pending' %}selected{% endif %}>Booking Confirmed</option>
+                <option value="received"            {% if booking.status == 'received' %}selected{% endif %}>Customer Arrived</option>
+                <option value="in-progress-wash"    {% if booking.status == 'in-progress-wash' %}selected{% endif %}>Vehicle Parked</option>
+                <option value="done"                {% if booking.status == 'done' %}selected{% endif %}>Service Completed</option>
+
+              {% elif booking.service_type == 'wash' %}
+                <option value="pending"             {% if booking.status == 'pending' %}selected{% endif %}>Booking Confirmed</option>
+                <option value="received"            {% if booking.status == 'received' %}selected{% endif %}>Vehicle Received</option>
+                <option value="in-progress-wash"    {% if booking.status == 'in-progress-wash' %}selected{% endif %}>Wash Started</option>
+                <option value="in-progress-coating" {% if booking.status == 'in-progress-coating' %}selected{% endif %}>Wash Completed</option>
+                <option value="done"                {% if booking.status == 'done' %}selected{% endif %}>Ready for Pickup</option>
+
+              {% else %}
+                <option value="pending"             {% if booking.status == 'pending' %}selected{% endif %}>Booking Confirmed</option>
+                <option value="received"            {% if booking.status == 'received' %}selected{% endif %}> Vehicle Inspection</option>
+                <option value="in-progress-wash"    {% if booking.status == 'in-progress-wash' %}selected{% endif %}>Ceramic Coating Applied</option>
+                <option value="in-progress-coating" {% if booking.status == 'in-progress-coating' %}selected{% endif %}>Coating Completed</option>
+                <option value="done"                {% if booking.status == 'done' %}selected{% endif %}>Ready for Pickup</option>
+
+              {% endif %}
+
+            </select>
+          </div>
+          <button type="submit" class="btn btn-primary btn-sm" style="padding: 0.5rem 1rem;">Update</button>
+        </form>
+      </div>
+
+    </div>
+    {% empty %}
+    <div class="text-center card glass" style="padding: 3rem;">
+        <i data-lucide="check-circle" style="width:48px;height:48px;color:var(--color-primary);margin:0 auto 1rem;"></i>
+        <h3>All caught up!</h3>
+        <p class="text-muted">There are zero active bookings right now.</p>
+    </div>
+    {% endfor %}
+
+  </div>
+</div>
+{% endblock %}

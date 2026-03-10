@@ -1,0 +1,8 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^cd '/Users/subairvs/Desktop/404-app 2' && source myenv/bin/activate && python manage\\.py runserver 8001$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}

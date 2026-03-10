@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="auth-container animate-fade-in">
+  <div class="card glass w-full mx-auto" style="max-width: 400px;">
+    <div class="text-center m-b-2">
+      <i data-lucide="log-in" style="width:48px;height:48px;color:var(--color-primary);margin:0 auto 1rem;"></i>
+      <h2>Welcome Back</h2>
+      <p class="text-muted">Log in to track your vehicle and manage services.</p>
+    </div>
+
+    <form method="post" action="{% url 'login' %}">
+      {% csrf_token %}
+      
+      {% if form.errors %}
+        <div class="m-b-1 text-sm" style="color: #ef4444;">
+          Your username and password didn't match. Please try again.
+        </div>
+      {% endif %}
+
+      <div class="form-group m-b-1">
+        <label class="text-muted block m-b-1">Username</label>
+        <input type="text" name="username" class="input w-full" placeholder="Enter your username" required autofocus>
+      </div>
+
+      <div class="form-group m-b-2">
+        <label class="text-muted block m-b-1">Password</label>
+        <input type="password" name="password" class="input w-full" placeholder="Enter your password" required>
+      </div>
+
+      <button type="submit" class="btn btn-primary w-full">Log In</button>
+      <input type="hidden" name="next" value="{{ next|default:'/' }}">
+    </form>
+    
+    <div class="text-center m-t-2 text-sm text-muted">
+      Don't have an account? <a href="{% url 'register' %}">Register</a>
+    </div>
+  </div>
+</div>
+{% endblock %}
