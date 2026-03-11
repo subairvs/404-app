@@ -1,11 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
-
 {% block content %}
-<div class="container flex flex-col items-center animate-fade-in" style="padding-bottom: 5rem; min-height: 80vh;">
-  
+<div class="container animate-fade-in" style="padding-bottom: 5rem; min-height: 80vh;">
   <div class="booking-header text-center m-b-2">
-    <h2 class="gradient-text" style="font-size: 3rem;">Book Your Service</h2>
+    <h2 class="gradient-text">Book Your Service</h2>
     <div class="progress-bar flex justify-center gap-1 m-t-1">
       <div id="pb-1" class="progress-step" style="width: 50px; height: 5px; border-radius: 10px; transition: 0.3s; background: var(--color-primary);"></div>
       <div id="pb-2" class="progress-step" style="width: 50px; height: 5px; border-radius: 10px; transition: 0.3s; background: var(--color-border);"></div>
@@ -30,7 +28,7 @@
                  value="{% if user.is_authenticated %}{{ user.get_full_name }}{% endif %}" required>
         </div>
         
-        <div class="grid gap-2 m-b-2" style="grid-template-columns: 1fr 1fr;">
+        <div class="grid gap-2 m-b-2 grid-cols-1 md-grid-cols-2">
             <div class="form-group">
                 <label class="text-muted block m-b-1 text-sm">Vehicle Model</label>
                 <input type="text" name="vehicle_name" id="input-vehicle" class="input" style="height: 50px; padding: 0 1.25rem;" placeholder="e.g. Hyundai Creta" required>
@@ -41,7 +39,7 @@
             </div>
         </div>
 
-        <div class="grid gap-2 m-b-2" style="grid-template-columns: 1fr 1fr;">
+        <div class="grid gap-2 m-b-2 grid-cols-1 md-grid-cols-2">
             <div class="form-group">
               <label class="text-muted block m-b-1 text-sm">Date Giving Vehicle (Drop-off)</label>
               <input type="date" name="arrival_date" id="input-arrival-date" class="input" style="height: 50px; padding: 0 1.25rem; font-family: inherit; color-scheme: dark;" required>
@@ -85,7 +83,7 @@
 
       <div id="step-3" class="step animate-fade-in" style="display: none;">
          <h3 class="m-b-2"><i data-lucide="map-pin" class="inline-icon"></i> Select Location</h3>
-         <div class="grid gap-1 m-b-2" style="grid-template-columns: 1fr 1fr;">
+         <div class="grid gap-1 m-b-2 grid-cols-1 md-grid-cols-2">
            {% for airport in airports %}
              <button type="button" id="airport-{{ airport.id }}" class="btn btn-outline airport-btn"
                      style="padding: 1.5rem;"

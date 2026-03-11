@@ -7,13 +7,25 @@
     <title>404 Care - Premium Car Wash & Ceramic Coating</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@latest"></script>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}?v=2">
     
     <style>
         /* Essential CSS to fix the "floating" and "overlap" look immediately */
         :root {
             --nav-height: 80px;
-            --color-primary: #ff0055; /* Adjust to match your Register button pink */
+            --color-primary: #ff0055; 
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0a;
+            color: #fff;
         }
 
         .navbar {
@@ -25,7 +37,6 @@
             z-index: 1000;
             display: flex;
             align-items: center;
-            /* The "Glassmorphism" fix: prevents the solid black 'wall' effect */
             background: rgba(10, 10, 10, 0.8); 
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
@@ -37,7 +48,7 @@
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 2rem;
+            padding: 0 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -50,6 +61,7 @@
             text-decoration: none;
             font-weight: 700;
             font-size: 1.5rem;
+            z-index: 1001; /* Stay above mobile menu */
         }
 
         .logo-404 { color: #fff; }
@@ -70,16 +82,70 @@
             align-items: center;
             gap: 8px;
             transition: color 0.2s;
+            white-space: nowrap;
         }
 
         .nav-link:hover {
             color: var(--color-primary);
         }
 
-        /* Crucial: This pushes the "Fly High" text down so it's not hidden behind the nav */
+        .mobile-menu-btn {
+            display: none; /* Hidden on desktop */
+            background: transparent;
+            border: none;
+            color: white;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* Responsive Mobile Styles */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block; /* Show hamburger on mobile */
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%; /* Hidden off-screen */
+                height: 100vh;
+                width: 70%;
+                max-width: 300px;
+                background: #111;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 100px 2rem 2rem 2rem;
+                gap: 1.5rem;
+                transition: 0.4s ease-in-out;
+                box-shadow: -10px 0 20px rgba(0,0,0,0.5);
+                border-left: 1px solid rgba(255,255,255,0.1);
+            }
+
+            .nav-links.show-mobile {
+                right: 0; /* Slide in */
+            }
+
+            .nav-link {
+                font-size: 1.1rem;
+                width: 100%;
+            }
+
+            form {
+                width: 100%;
+                margin-left: 0 !important;
+                margin-top: 10px;
+            }
+
+            .btn-sm {
+                width: 100%;
+                display: block;
+                text-align: center;
+            }
+        }
+
         .main-content {
             padding-top: var(--nav-height);
-            min-height: calc(100vh - 160px); /* Adjust based on footer height */
+            min-height: calc(100vh - 160px);
         }
 
         .btn-sm {
@@ -87,12 +153,20 @@
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
         }
 
         .btn-primary {
             background-color: var(--color-primary);
             color: white;
             border: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.3);
         }
     </style>
 </head>
@@ -105,7 +179,11 @@
               <span class="logo-desc">Care</span>
             </a>
             
-            <div class="nav-links">
+            <button class="mobile-menu-btn" aria-label="Toggle Menu">
+                <i data-lucide="menu" id="menu-icon"></i>
+            </button>
+
+            <div class="nav-links" id="navLinks">
               {% if not user.is_staff %}
                 <a href="{% url 'home' %}#services" class="nav-link">
                   <i data-lucide="car" style="width:18px;height:18px;"></i> Services
@@ -117,7 +195,7 @@
                   <a href="{% url 'staff_dashboard' %}" class="nav-link" style="color:var(--color-primary);">
                     <i data-lucide="shield" style="width:18px;height:18px;"></i> Staff Panel
                   </a>
-                  <form action="{% url 'logout' %}" method="post" style="display:inline; margin-left: 10px;">
+                  <form action="{% url 'logout' %}" method="post">
                       {% csrf_token %}
                       <button type="submit" class="btn btn-outline btn-sm">Logout</button>
                   </form>
@@ -128,7 +206,7 @@
                   <a href="{% url 'dashboard_latest' %}" class="nav-link">
                     <i data-lucide="user" style="width:18px;height:18px;"></i> My Bookings
                   </a>
-                  <form action="{% url 'logout' %}" method="post" style="display:inline; margin-left: 10px;">
+                  <form action="{% url 'logout' %}" method="post">
                       {% csrf_token %}
                       <button type="submit" class="btn btn-outline btn-sm">Logout</button>
                   </form>
@@ -149,7 +227,7 @@
         </main>
         
         <footer class="footer glass">
-          <div class="container text-center text-muted" style="padding: 2rem 0; border-top: 1px solid rgba(255,255,255,0.05);">
+          <div class="container text-center text-muted" style="padding: 2rem 0; border-top: 1px solid rgba(255,255,255,0.05); text-align: center;">
             <p>© 2026 404 Care Ltd. Ceramic Coating & Premium Wash.</p>
           </div>
         </footer>
@@ -159,16 +237,29 @@
       // Initialize Lucide icons
       lucide.createIcons();
       
-      // Optional: Add scroll effect to navbar
-      window.addEventListener('scroll', () => {
-          const nav = document.querySelector('.navbar');
-          if (window.scrollY > 50) {
-              nav.style.background = 'rgba(10, 10, 10, 0.95)';
-              nav.style.padding = '0.5rem 0';
-          } else {
-              nav.style.background = 'rgba(10, 10, 10, 0.8)';
-              nav.style.padding = '1rem 0';
-          }
+      // Mobile Menu Toggle
+      const mobileBtn = document.querySelector('.mobile-menu-btn');
+      const navLinks = document.querySelector('.nav-links');
+      const menuIcon = document.getElementById('menu-icon');
+
+      if(mobileBtn) {
+          mobileBtn.addEventListener('click', () => {
+              navLinks.classList.toggle('show-mobile');
+              
+              // Change icon between menu and X when open
+              const isOpen = navLinks.classList.contains('show-mobile');
+              mobileBtn.innerHTML = isOpen ? '<i data-lucide="x"></i>' : '<i data-lucide="menu"></i>';
+              lucide.createIcons();
+          });
+      }
+
+      // Close menu when a link is clicked (useful for anchor links like #services)
+      document.querySelectorAll('.nav-link').forEach(link => {
+          link.addEventListener('click', () => {
+              navLinks.classList.remove('show-mobile');
+              mobileBtn.innerHTML = '<i data-lucide="menu"></i>';
+              lucide.createIcons();
+          });
       });
     </script>
     {% block scripts %}{% endblock %}
